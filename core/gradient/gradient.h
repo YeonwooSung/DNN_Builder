@@ -1,0 +1,4 @@
+#ifndef METATRON_CORE_GRADIENT_H_
+#define METATRON_CORE_GRADIENT_H_
+
+#endif
