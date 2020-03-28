@@ -146,7 +146,6 @@ public:
     }
 
     cuMat(int rows, int cols) {
-
         cublasCreate(&cudaHandle);
         cudaThreadSynchronize();
 
@@ -239,45 +238,46 @@ public:
                 rows * cols * sizeof(*mDevice), cudaMemcpyHostToDevice);
         if (error != cudaSuccess) printf("memHostToDevice cudaMemcpy error\n");
     }
+
     void memDeviceToHost() {
-        if (mHost == NULL) this->memMallocHost();
-        cudaError_t error = cudaMemcpy(mHost, mDevice,
-                rows * cols * sizeof(*mDevice), cudaMemcpyDeviceToHost);
+        if (mHost == NULL)
+            this->memMallocHost();
+        cudaError_t error = cudaMemcpy(mHost, mDevice, rows * cols * sizeof(*mDevice), cudaMemcpyDeviceToHost);
         if (error != cudaSuccess)
             printf("memDeviceToHost cudaMemcpy error\n");
     }
+
     void memSetHost(int i, int j, float val) {
         if (mHost == NULL)
             this->memMallocHost();
-
         mHost[IDX2F(i, j, rows)] = val;
     }
+
     void memSetHost(float *v) {
         if (mHost == NULL)
             this->memMallocHost();
         if (mDevice == NULL)
             cout << "memSetHost mDevice is null" << endl;
+        cudaError_t error = cudaMemcpy(mDevice, v, rows * cols * sizeof(*mDevice), cudaMemcpyHostToDevice);
 
-        cudaError_t error = cudaMemcpy(mDevice, v,
-                rows * cols * sizeof(*mDevice), cudaMemcpyHostToDevice);
         if (error != cudaSuccess)
             printf("memSetHost cudaMemcpy error\n");
     }
+
     void memSetDevice(float *v) {
-        cudaError_t error = cudaMemcpy(mDevice, v,
-                                       rows * cols * sizeof(*mDevice), cudaMemcpyDeviceToDevice);
+        cudaError_t error = cudaMemcpy(mDevice, v, rows * cols * sizeof(*mDevice), cudaMemcpyDeviceToDevice);
         if (error != cudaSuccess)
             printf("memSetDevice cudaMemcpy error\n");
     }
+
     void memSetDeviceRow(float *v, int row_index) {
-        cudaError_t error = cudaMemcpy(mDevice + row_index * cols, v,
-                                       cols * sizeof(float), cudaMemcpyDeviceToDevice);
+        cudaError_t error = cudaMemcpy(mDevice + row_index * cols, v, cols * sizeof(float), cudaMemcpyDeviceToDevice);
         if (error != cudaSuccess)
             printf("memSetDeviceRow cudaMemcpy error\n");
     }
+
     void memSetDeviceCol(float *v, int col_index) {
-        cudaError_t error = cudaMemcpy(mDevice + col_index * rows, v,
-                                       rows * sizeof(float), cudaMemcpyDeviceToDevice);
+        cudaError_t error = cudaMemcpy(mDevice + col_index * rows, v, rows * sizeof(float), cudaMemcpyDeviceToDevice);
         if (error != cudaSuccess)
             printf("memSetDeviceCol cudaMemcpy error\n");
     }
@@ -285,10 +285,12 @@ public:
 
     void toHostArray(){
         //cout << "toHostArray" << endl;
-        if (mHost == NULL) this->memMallocHost();
-        memDeviceToHost();
+        if (mHost == NULL)
+            this->memMallocHost();
 
+        memDeviceToHost();
         mHostArray.resize(rows*cols);
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++){
                 mHostArray[IDX2F(i, j, rows)] = mHost[IDX2F(i, j, rows)];
@@ -323,8 +325,8 @@ public:
     cuMat &operator=(const cuMat &a) {
         new_matrix(a.rows, a.cols);
 
-        cudaError_t error = cudaMemcpy(mDevice, a.mDevice,
-                rows * cols * sizeof(*mDevice), cudaMemcpyDeviceToDevice);
+        cudaError_t error = cudaMemcpy(mDevice, a.mDevice, rows * cols * sizeof(*mDevice), cudaMemcpyDeviceToDevice);
+
         if (error != cudaSuccess)
             printf("cuMat operator= cudaMemcpy error\n");
 
@@ -379,13 +381,14 @@ public:
                 if (i!=a.rows-1) output << endl;
                 else output << "]" << endl;
             }
-        }
-        else{
+        } else{
             for (int i = 0; i < 5; i++) {
                 printRows(output, a, i);
                 output << endl;
             }
+
             output << "...," << endl;
+
             for (int i = a.rows -5; i < a.rows; i++) {
                 printRows(output, a, i);
                 if (i!=a.rows-1) output << endl;
@@ -402,12 +405,14 @@ public:
 
         return r;
     }
+
     friend cuMat operator+(float a, cuMat &b) {
         cuMat r = b;
         b.plus(a, r);
 
         return r;
     }
+
     friend cuMat operator+(const cuMat &b, float a) {
         cuMat r = b;
         r.plus(a, r);
@@ -428,36 +433,42 @@ public:
 
         return r;
     }
+
     friend cuMat operator*(float a, const cuMat &b) {
         cuMat r = b;
         r.mul(a, r);
 
         return r;
     }
+
     friend cuMat operator*(const cuMat &b, float a) {
         cuMat r = b;
         r.mul(a, r);
 
         return r;
     }
+
     friend cuMat operator/(float p, cuMat &b) {
         cuMat r = b;
         b.div(p, r);
 
         return r;
     }
+
     friend cuMat operator/(const cuMat &b, float p) {
             cuMat r = b;
             r.mul(1.0/p, r);
 
             return r;
     }
-    friend cuMat operator/(const cuMat &a, const cuMat &b) {
-            cuMat r = a;
-            r.div(b, r);
 
-            return r;
-        }
+    friend cuMat operator/(const cuMat &a, const cuMat &b) {
+        cuMat r = a;
+        r.div(b, r);
+
+        return r;
+    }
+
 
     cuMat &operator+=(const cuMat &a) {
         plus(a, *this);
@@ -499,12 +510,13 @@ public:
     }
 
     void plus(const cuMat &b, cuMat &r) {
-
         float alpha = 1;
         float beta = 1;
+
         cublasStatus_t stat = cublasSgeam(r.cudaHandle, CUBLAS_OP_N,
                 CUBLAS_OP_N, rows, cols, &alpha, mDevice, rows, &beta,
                 b.mDevice, rows, r.mDevice, r.rows);
+
         if (stat != CUBLAS_STATUS_SUCCESS)
             cout << "cannot cublasSgeam" << endl;
         cudaThreadSynchronize();
@@ -683,8 +695,8 @@ public:
 
         mat_mul_elementwise_kernel_exec(mDevice, m.mDevice, r.mDevice, cols, rows);
     }
-    void mul_plus(const cuMat &m, cuMat &r, float alpha, float beta) {
 
+    void mul_plus(const cuMat &m, cuMat &r, float alpha, float beta) {
         mat_mul_elementwise_plus_kernel_exec(mDevice, m.mDevice, r.mDevice, alpha, beta, cols, rows);
     }
 
@@ -693,10 +705,9 @@ public:
         log(r, 0.0);
         return r;
     }
+
     void log(cuMat &r, float alpha) {
-
         mat_log_kernel_exec(mDevice, r.mDevice, cols, rows, alpha);
-
     }
 
     cuMat sqrt() {
@@ -704,8 +715,8 @@ public:
         sqrt(r, 1e-8);
         return r;
     }
-    void sqrt(cuMat &r, float alpha) {
 
+    void sqrt(cuMat &r, float alpha) {
         mat_sqrt_kernel_exec(mDevice, r.mDevice, cols, rows, alpha);
     }
 
@@ -714,8 +725,8 @@ public:
         sqrt_d(r, 1e-8);
         return r;
     }
-    void sqrt_d(cuMat &r, float alpha) {
 
+    void sqrt_d(cuMat &r, float alpha) {
         mat_sqrt_d_kernel_exec(mDevice, r.mDevice, cols, rows, alpha);
     }
 
@@ -724,17 +735,20 @@ public:
         sin(r);
         return r;
     }
+
     void sin(cuMat &r){
         mat_sin_kernel_exec(mDevice, r.mDevice, cols, rows, 0);
     }
+
     cuMat cos(){
-         cuMat r(rows, cols);
-         cos(r);
-         return r;
-     }
-     void cos(cuMat &r){
-         mat_cos_kernel_exec(mDevice, r.mDevice, cols, rows, 0);
-     }
+        cuMat r(rows, cols);
+        cos(r);
+        return r;
+    }
+
+    void cos(cuMat &r){
+        mat_cos_kernel_exec(mDevice, r.mDevice, cols, rows, 0);
+    }
 
     cuMat relu() {
         cuMat r(rows, cols);
@@ -742,7 +756,6 @@ public:
         return r;
     }
     void relu(cuMat &r) {
-
         relu_kernel_exec(mDevice, r.mDevice, cols, rows);
     }
 

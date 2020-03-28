@@ -459,6 +459,7 @@ void FunctionLinear::backward(cuMat &p_grad, vector<PVariable > &inputs, vector<
 FunctionSparseLinear::FunctionSparseLinear() : Function() {
     name = "FunctionSparseLinear";
 }
+
 FunctionSparseLinear::FunctionSparseLinear(Variable *w, Variable *b, float beta, float p, Variable *ph) : Function() {
     name = "FunctionSparseLinear";
     this->w  = w;
@@ -468,6 +469,7 @@ FunctionSparseLinear::FunctionSparseLinear(Variable *w, Variable *b, float beta,
     this->p = p;
     this->ph = ph;
 }
+
 FunctionSparseLinear::FunctionSparseLinear(Variable *w, float beta, float p, Variable *ph) : Function() {
     name = "FunctionSparseLinear";
     noBias = true;
@@ -477,6 +479,7 @@ FunctionSparseLinear::FunctionSparseLinear(Variable *w, float beta, float p, Var
     this->p = p;
     this->ph = ph;
 }
+
 void FunctionSparseLinear::toHostArray(){
     i1.toHostArray();
     w->data.toHostArray();
@@ -486,6 +489,7 @@ void FunctionSparseLinear::toHostArray(){
         b->grad.toHostArray();
     }
 }
+
 void FunctionSparseLinear::fromHostArray(){
     i1.fromHostArray();
     w->data.fromHostArray();
@@ -658,6 +662,7 @@ void FunctionEmbed::fromHostArray(){
 FunctionReLU::FunctionReLU() : Function() {
     name = "FunctionReLU";
 }
+
 PVariable FunctionReLU::forward(vector<PVariable > &inputs, vector<PVariable > &outputs){
 
 
@@ -669,6 +674,7 @@ PVariable FunctionReLU::forward(vector<PVariable > &inputs, vector<PVariable > &
 
     return r;
 }
+
 void FunctionReLU::backward(cuMat &p_grad, vector<PVariable > &inputs, vector<PVariable > &outputs){
 
     PVariable x = inputs.at(0);

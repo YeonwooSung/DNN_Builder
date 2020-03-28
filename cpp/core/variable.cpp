@@ -2,9 +2,6 @@
  * variable.cpp
  *
  */
-
-#include <list>
-#include <random>
 #include <iostream>
 #include <chrono>
 
@@ -20,10 +17,9 @@ int count_variable = 0;
 map<Variable *, bool> variable_pool;
 
 Variable *variable_construct(int rows, int cols){
+    count_variable += 1;
 
-    count_variable++;
-
-    for(auto itr = variable_pool.begin(); itr != variable_pool.end(); ++itr) {
+    for (auto itr = variable_pool.begin(); itr != variable_pool.end(); ++itr) {
         if (!itr->second){
             Variable *v = (Variable *)itr->first;
             if (v->data.rows == rows && v->data.cols == cols){
@@ -41,11 +37,11 @@ Variable *variable_construct(int rows, int cols){
 
     return r;
 }
+
 void variable_destroy(Variable *ptr){
-
-    count_variable--;
-
+    count_variable -= 1;
     variable_pool[ptr] = false;
+
     if (variable_pool.size() > 4000){
         variable_pool.erase(ptr);
         delete ptr;
@@ -203,14 +199,13 @@ void Variable::creatorSet(Function *f) {
 }
 
 void Variable::backward() {
-
     this->grad = seed;
 
     this->backward(this);
 
 }
-void Variable::backward(Variable *v) {
 
+void Variable::backward(Variable *v) {
     if (v == NULL) {
         return;
     }
@@ -244,9 +239,9 @@ void Variable::backward(Variable *v) {
 
 
 void Variable::zero_grads() {
-
     this->zero_grads(this);
 }
+
 void Variable::zero_grads(Variable *v) {
 
     if (v == NULL)
@@ -256,8 +251,6 @@ void Variable::zero_grads(Variable *v) {
     v->forward_count = 0;
 
     if (v->creator != NULL) {
-
-
         for (int i = 0; i < v->creator->inputs.size(); i++) {
             PVariable nv = v->creator->inputs[i];
 
@@ -273,6 +266,7 @@ void Variable::ones() {
     grad.mul(0, grad);
 
 }
+
 void Variable::zeros() {
     data.mul(0, data);
     grad.mul(0, grad);
@@ -281,6 +275,7 @@ void Variable::zeros() {
     is_last_backward = NULL;
     this->creator = NULL;
 }
+
 void Variable::unchain(){
     this->creator = NULL;
 }

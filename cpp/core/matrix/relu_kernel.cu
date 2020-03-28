@@ -6,8 +6,7 @@ __device__ __forceinline__ float relu(float a){
     return a > 0.0f ? a:0.0f;
 }
 
-__global__ void relu_kernel (const float * __restrict__ src,
-                                float * __restrict__ dst, int m, int n){
+__global__ void relu_kernel (const float * __restrict__ src, float * __restrict__ dst, int m, int n){
     int row = blockIdx.y*blockDim.y+threadIdx.y;
     int col = blockIdx.x*blockDim.x+threadIdx.x;
 
