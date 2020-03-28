@@ -6,7 +6,7 @@
 #include <memory>
 #include <boost/intrusive_ptr.hpp>
 
-#include "cuMat.h"
+#include <matrix/cuMat.h>
 #include "cuMatSparse.h"
 
 using namespace std;
