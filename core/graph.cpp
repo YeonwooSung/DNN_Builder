@@ -15,7 +15,6 @@ void Graph::init(){
 }
 
 void Graph::remove_chain(){
-
     funcs_chain.clear();
 }
 
@@ -25,38 +24,28 @@ vector<Variable *> Graph::getParams() {
     return params;
 }
 
-PVariable Graph::forward(PVariable input) {
-
-}
-PVariable Graph::forward(PVariable x, PVariable t) {
-
-}
+PVariable Graph::forward(PVariable input) {}
+PVariable Graph::forward(PVariable x, PVariable t) {}
 
 void Graph::zero_grads() {}
-
 void Graph::reset_state() {}
-
 
 void Graph::toHostArray(){}
 void Graph::fromHostArray(){}
 
 
 
-Linear::Linear() : Graph() {
-
-}
+Linear::Linear() : Graph() {}
 Linear::Linear(int output_size, int input_size, bool no_bias) : Graph() {
+    noBias = no_bias;
 
-        noBias = no_bias;
+    this->w = new Variable(output_size, input_size);
+    this->w->randoms(0., sqrt(2.0/((float)input_size)));
 
-        this->w = new Variable(output_size, input_size);
-        this->w->randoms(0., sqrt(2.0/((float)input_size)));
-
-        if (!noBias){
-            this->b = new Variable(output_size, 1);
-        }
-
+    if (!noBias){
+        this->b = new Variable(output_size, 1);
     }
+}
 
 Linear::Linear(Variable *w, bool isTranspose) : Graph() {
     this->w = w;
@@ -214,9 +203,8 @@ PVariable ReLU::forward(PVariable v){
         return pf->forward(v);
 }
 
-PReLU::PReLU() : Graph() {
+PReLU::PReLU() : Graph() {}
 
-}
 PReLU::PReLU(int rows, int cols) {
     a = new Variable(rows, cols);
     // init weight using 0.25
@@ -224,8 +212,8 @@ PReLU::PReLU(int rows, int cols) {
     a->data.fill(0.25);
 
 }
-PVariable PReLU::forward(PVariable v){
 
+PVariable PReLU::forward(PVariable v){
     Function *f = new FunctionPReLU(this->a);
     PFunction pf(f);
     funcs_chain.push_back(pf);
