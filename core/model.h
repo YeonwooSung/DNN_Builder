@@ -218,9 +218,11 @@ public:
 
         ofs.close();
     }
+
     void load(string path){
         std::ifstream ifs(path);
         boost::archive::binary_iarchive ia(ifs);
+
         ia.register_type<Linear>(); // add if you define new function
         ia.register_type<LSTM>(); // add if you define new function
         ia.register_type<FullLSTM>(); // add if you define new function
@@ -251,26 +253,19 @@ public:
 
             if (typeid(Linear) == id){
                 ((Linear *)g)->fromHostArray();
-            }
-            else if (typeid(LSTM) == id){
+            } else if (typeid(LSTM) == id){
                 ((LSTM *)g)->fromHostArray();
-            }
-            else if (typeid(FullLSTM) == id){
+            } else if (typeid(FullLSTM) == id){
                 ((FullLSTM *)g)->fromHostArray();
-            }
-            else if (typeid(FullLSTM2) == id){
+            } else if (typeid(FullLSTM2) == id){
                 ((FullLSTM2 *)g)->fromHostArray();
-            }
-            else if (typeid(GRU) == id){
+            } else if (typeid(GRU) == id){
                 ((GRU *)g)->fromHostArray();
-            }
-            else if (typeid(BatchNorm) == id){
+            } else if (typeid(BatchNorm) == id){
                 ((BatchNorm *)g)->fromHostArray();
-            }
-            else if (typeid(Conv2D) == id){
+            } else if (typeid(Conv2D) == id){
                 ((Conv2D *)g)->fromHostArray();
-            }
-            else if (typeid(PReLU) == id){
+            } else if (typeid(PReLU) == id){
                 ((PReLU *)g)->fromHostArray();
             }
         }

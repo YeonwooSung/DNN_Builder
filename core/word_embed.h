@@ -24,7 +24,6 @@ bool sort_greater(const ass_arr& left,const ass_arr& right){
 }
 
 class WordEmbed {
-
     Tokenizer token;
 
     vector<vector<string>> sequences;
@@ -33,8 +32,6 @@ class WordEmbed {
     map<int, string> idmap_reverse;
 
     map<string, int> words_count;
-
-
 
     int vocab_size = 0;
 

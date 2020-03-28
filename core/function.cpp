@@ -31,24 +31,30 @@ PVariable variable_construct_for_function(Function *f, int rows, int cols) {
 Function::Function(){
     name = "Function";
     this->id = func_id;
-    func_id++;
-    count_function++;
+    func_id += 1;
+    count_function += 1;
 }
+
 Function::~Function(){
     init();
     count_function--;
 
 }
-void Function::init() {
 
+void Function::init() {
     inputs.clear();
     outputs.clear();
 }
 
 
 
-PVariable Function::forward(vector<PVariable> &inputs, vector<PVariable > &outputs){return NULL;}
-void Function::backward(cuMat &p_grad, vector<PVariable > &inputs, vector<PVariable > &outputs){}
+PVariable Function::forward(vector<PVariable> &inputs, vector<PVariable > &outputs) {
+    return NULL;
+}
+
+void Function::backward(cuMat &p_grad, vector<PVariable > &inputs, vector<PVariable > &outputs) {
+    //TODO
+}
 
 
 PVariable Function::forward(PVariable v){
@@ -129,10 +135,8 @@ PVariable Function::forward(PVariable v1, PVariable v2, PVariable v3, PVariable 
 
 
 void Function::backward(cuMat &p_grad){
-
     backward(p_grad, inputs, outputs);
 }
-
 
 
 

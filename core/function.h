@@ -23,10 +23,8 @@ extern int count_variable;
 class Function {
 public:
 
-
     vector<PVariable> inputs;
     vector<PVariable> outputs;
-
 
     int id = -1;
     string name;
@@ -58,52 +56,57 @@ public:
 
     virtual void reset_state();
 
-        private:
+private:
     friend class boost::serialization::access;
     template<class Archive> void serialize(Archive & ar, const unsigned int version) {
+        //TODO
     }
-
 };
 
 
- class FunctionPlus : public Function {
- public:
- FunctionPlus() ;
- PVariable forward(vector<PVariable> &inputs, vector<PVariable> &outputs);
- void backward(cuMat &p_grad, vector<PVariable> &inputs, vector<PVariable> &outputs);
- };
- class FunctionMinus : public Function {
- public:
- FunctionMinus() ;
- PVariable forward(vector<PVariable> &inputs, vector<PVariable> &outputs);
- void backward(cuMat &p_grad, vector<PVariable> &inputs, vector<PVariable> &outputs);
- };
- class FunctionMul : public Function {
- public:
- FunctionMul() ;
- PVariable forward(vector<PVariable> &inputs, vector<PVariable> &outputs);
- void backward(cuMat &p_grad, vector<PVariable> &inputs, vector<PVariable> &outputs);
- };
- class FunctionSin : public Function {
-     public:
-         PVariable rr = NULL;
-         FunctionSin() ;
-         PVariable forward(vector<PVariable> &inputs, vector<PVariable> &outputs);
-         void backward(cuMat &p_grad, vector<PVariable> &inputs, vector<PVariable> &outputs);
- };
- class FunctionCos : public Function {
-      public:
-          PVariable rr = NULL;
-          FunctionCos() ;
-          PVariable forward(vector<PVariable> &inputs, vector<PVariable> &outputs);
-          void backward(cuMat &p_grad, vector<PVariable> &inputs, vector<PVariable> &outputs);
-  };
- class FunctionLog : public Function {
-     public:
-         FunctionLog() ;
-         PVariable forward(vector<PVariable> &inputs, vector<PVariable> &outputs);
-         void backward(cuMat &p_grad, vector<PVariable> &inputs, vector<PVariable> &outputs);
- };
+class FunctionPlus : public Function {
+public:
+    FunctionPlus();
+    PVariable forward(vector<PVariable> &inputs, vector<PVariable> &outputs);
+    void backward(cuMat &p_grad, vector<PVariable> &inputs, vector<PVariable> &outputs);
+};
+
+class FunctionMinus : public Function {
+public:
+    FunctionMinus() ;
+    PVariable forward(vector<PVariable> &inputs, vector<PVariable> &outputs);
+    void backward(cuMat &p_grad, vector<PVariable> &inputs, vector<PVariable> &outputs);
+};
+
+class FunctionMul : public Function {
+public:
+    FunctionMul() ;
+    PVariable forward(vector<PVariable> &inputs, vector<PVariable> &outputs);
+    void backward(cuMat &p_grad, vector<PVariable> &inputs, vector<PVariable> &outputs);
+};
+
+class FunctionSin : public Function {
+    public:
+        PVariable rr = NULL;
+        FunctionSin() ;
+        PVariable forward(vector<PVariable> &inputs, vector<PVariable> &outputs);
+        void backward(cuMat &p_grad, vector<PVariable> &inputs, vector<PVariable> &outputs);
+};
+
+class FunctionCos : public Function {
+public:
+    PVariable rr = NULL;
+    FunctionCos() ;
+    PVariable forward(vector<PVariable> &inputs, vector<PVariable> &outputs);
+    void backward(cuMat &p_grad, vector<PVariable> &inputs, vector<PVariable> &outputs);
+};
+
+class FunctionLog : public Function {
+public:
+    FunctionLog() ;
+    PVariable forward(vector<PVariable> &inputs, vector<PVariable> &outputs);
+    void backward(cuMat &p_grad, vector<PVariable> &inputs, vector<PVariable> &outputs);
+};
 
 class FunctionSqrt : public Function {
 public:

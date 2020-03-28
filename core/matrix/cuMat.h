@@ -150,7 +150,6 @@ public:
         cudaThreadSynchronize();
 
         new_matrix(rows, cols);
-
     }
 
     cuMat(const cuMat &a) {
@@ -535,21 +534,24 @@ public:
     }
 
     void mul(const float alpha, cuMat &r) {
-
         float beta = 0;
+
         cublasStatus_t stat = cublasSgeam(r.cudaHandle, CUBLAS_OP_N,
                 CUBLAS_OP_N, rows, cols, &alpha, mDevice, rows, &beta,
                 r.mDevice, r.rows, r.mDevice, r.rows);
+
         if (stat != CUBLAS_STATUS_SUCCESS)
             cout << "cannot cublasSgeam" << endl;
         cudaThreadSynchronize();
     }
-    void mul_plus(const float alpha, cuMat &r) {
 
+    void mul_plus(const float alpha, cuMat &r) {
         float beta = 1;
+
         cublasStatus_t stat = cublasSgeam(r.cudaHandle, CUBLAS_OP_N,
                 CUBLAS_OP_N, rows, cols, &alpha, mDevice, rows, &beta,
                 r.mDevice, r.rows, r.mDevice, r.rows);
+
         if (stat != CUBLAS_STATUS_SUCCESS)
             cout << "cannot cublasSgeam" << endl;
         cudaThreadSynchronize();
@@ -558,7 +560,6 @@ public:
 
 
     void plus(const float beta, cuMat &r) {
-
         cuMat i(rows, cols);
         i.ones();
 
@@ -566,23 +567,24 @@ public:
         cublasStatus_t stat = cublasSgeam(r.cudaHandle, CUBLAS_OP_N,
                 CUBLAS_OP_N, rows, cols, &alpha, mDevice, rows, &beta,
                 i.mDevice, i.rows, r.mDevice, r.rows);
+
         if (stat != CUBLAS_STATUS_SUCCESS)
             cout << "cannot cublasSgeam" << endl;
         cudaThreadSynchronize();
     }
-    void plus(const float beta, cuMat &i, cuMat &r) {
 
+    void plus(const float beta, cuMat &i, cuMat &r) {
         float alpha = 1;
         cublasStatus_t stat = cublasSgeam(r.cudaHandle, CUBLAS_OP_N,
                 CUBLAS_OP_N, rows, cols, &alpha, mDevice, rows, &beta,
                 i.mDevice, i.rows, r.mDevice, r.rows);
+
         if (stat != CUBLAS_STATUS_SUCCESS)
             cout << "cannot cublasSgeam" << endl;
         cudaThreadSynchronize();
     }
 
     void div(const float p, cuMat &r) {
-
         matmod_kernel_exec(mDevice, r.mDevice, cols, rows, p);
     }
 
