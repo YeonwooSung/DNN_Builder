@@ -1,2 +1,3 @@
 # MetaTron
-An useful AI (hopefully..)
+
+AI library that helps the user to implement AI system.
